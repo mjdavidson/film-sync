@@ -1,7 +1,7 @@
-import { useState } from "react";
-import DropZone from "./components/DropZone";
-import Sidebar from "./components/Sidebar";
-import MetadataInspector from "./components/MetadataInspector";
+import { useState } from 'react';
+import DropZone from './components/DropZone';
+import MetadataInspector from './components/MetadataInspector';
+import Sidebar from './components/Sidebar';
 
 function App() {
   const [referencePhoto, setReferencePhoto] = useState<File>();

@@ -1,4 +1,4 @@
-import SidebarPhoto from "./SidebarPhoto";
+import SidebarPhoto from './SidebarPhoto';
 
 function Sidebar() {
   return (

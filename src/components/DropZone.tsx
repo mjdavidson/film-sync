@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import { useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 function DropZone({
   setReferencePhoto,
@@ -15,7 +15,7 @@ function DropZone({
         acceptedFilesLength: acceptedFiles.length,
       });
       if (acceptedFiles.length !== 1) {
-        throw new Error("Only 1 file accepted");
+        throw new Error('Only 1 file accepted');
       }
       setReferencePhoto(file);
     },

@@ -1,4 +1,4 @@
-import * as z from "zod";
+import * as z from 'zod';
 
 export const MetadataSchema = z.object({
   Make: z.string().optional(),

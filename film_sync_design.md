@@ -43,7 +43,7 @@ interface PhotoFile {
   handle?: FileSystemFileHandle; // For saving back to disk
   previewUrl: string;
   currentExif: ExifData;
-  status: "pending" | "synced" | "error";
+  status: 'pending' | 'synced' | 'error';
 }
 ```
 
