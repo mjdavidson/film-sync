@@ -1,9 +1,10 @@
-import { formatISO } from 'date-fns';
-import exifr from 'exifr';
-import { useEffect, useMemo, useState } from 'react';
-import type { Metadata } from '../metadata';
-import { MetadataSchema } from '../metadata';
-import MetadataRow from './MetadataRow';
+import { formatISO } from "date-fns";
+import exifr from "exifr";
+import { useEffect, useMemo, useState } from "react";
+import type { Metadata } from "../metadata";
+import { MetadataSchema } from "../metadata";
+import Map from "./Map";
+import MetadataRow from "./MetadataRow";
 
 function MetadataInspector({
   referenceFile,
@@ -44,7 +45,7 @@ function MetadataInspector({
 
   return (
     <section className="bg-slate-50 p-6 rounded-xl border border-slate-100">
-      <img style={{ maxHeight: '100px' }} src={imgSrc} />
+      <img style={{ maxHeight: "100px" }} src={imgSrc} />
       {val != null ? (
         <>
           <h3 className="font-semibold text-slate-900 mb-4">
@@ -68,6 +69,7 @@ function MetadataInspector({
           </div>
         </>
       ) : null}
+      <Map />
     </section>
   );
 }
