@@ -39,11 +39,14 @@ interface ExifData {
 
 interface PhotoFile {
   id: string;
-  file: File;
-  handle?: FileSystemFileHandle; // For saving back to disk
+  file: File; // The Scan (Target)
+  handle?: FileSystemFileHandle;
   previewUrl: string;
-  currentExif: ExifData;
-  status: 'pending' | 'synced' | 'error';
+
+  referenceFile?: File; // The iPhone Photo (Source)
+  referenceData?: ExifData; // The parsed metadata from the Source
+
+  status: 'pending' | 'ready_to_sync' | 'synced' | 'error';
 }
 ```
 
@@ -53,11 +56,14 @@ interface PhotoFile {
 
 ### 4.1. Drag & Drop Zones
 
-- **Zone A (Source):** Accepts HEIC/HEIF/JPG. Parses metadata immediately upon drop. Displays "Captured At" time and Map pin (if GPS exists).
+- **Zone A (Contextual Source - Right Column):**
+  - **Action**: Accepts HEIC/HEIF/JPG.
+  - **Logic**: When a file is dropped here, it is assigned **only to the currently selected Target Scan** in the sidebar.
+  - **Feedback**: The UI immediately updates to show the metadata _for that specific reference photo_.
 
-- **Zone B (Target Batch):** Accepts multiple JPG/TIFF files. Lists them in a grid or list view.
-
-- **Logic:** Users can drop a specific Source photo onto a specific Target photo to link them 1:1, or select a Target and drop a Source globally.
+- **Zone B (Target Batch - Left Sidebar):**
+  - **Action**: Accepts multiple JPG/TIFF files.
+  - **Logic**: Adds them to the batch list.
 
 ### 4.2. Metadata Visualization
 
@@ -112,14 +118,14 @@ interface PhotoFile {
 
   - Thumbnail view.
 
-- **Right Column (The Reference / Source):**
-  - Large drop zone for the iPhone photo.
+- **Right Column (The Inspector):**
+  - **Context:** Displays information for the _Active Selection_.
 
-  - Metadata inspector.
+  - **State 1 (No Selection):** Shows "Select a scan to add reference".
 
-  - "Sync to Selected" button.
+  - **State 2 (Scan Selected, No Reference):** Large drop zone: "Drop Reference Photo for [Scan Name]".
 
-  - Manual entry toggle.
+  - **State 3 (Scan Selected + Reference Linked):** Shows the "Sync Control" panel (Map, Time Offset, Confirm Button).
 
 ### 5.2. Interaction Flow
 

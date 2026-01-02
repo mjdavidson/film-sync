@@ -1,19 +1,106 @@
+import type { PhotoFile } from '../types';
 import DropZone from './DropZone';
 import MetadataInspector from './MetadataInspector';
 
-function Workspace({
-  setReferencePhoto,
-  referencePhoto,
-}: {
-  setReferencePhoto: React.Dispatch<React.SetStateAction<File | undefined>>;
-  referencePhoto: File | undefined;
-}) {
-  return (
-    <main className="flex-1 bg-white overflow-y-auto p-8">
-      <div className="max-w-2xl mx-auto space-y-8">
-        <DropZone setReferencePhoto={setReferencePhoto} />
+interface WorkspaceProps {
+  selectedTargetFile: PhotoFile | undefined;
+  setReferenceFile: (
+    targetFileId: string,
+    referenceFile: File | undefined,
+  ) => void;
+}
 
-        <MetadataInspector referenceFile={referencePhoto} />
+function Workspace({ selectedTargetFile, setReferenceFile }: WorkspaceProps) {
+  const referenceFile = selectedTargetFile?.referenceFile;
+  console.log({ selectedTargetFile });
+
+  // no target photos
+  if (selectedTargetFile == null) {
+    return null;
+  }
+
+  // Empty state
+  if (referenceFile == null) {
+    return (
+      <main className="flex-1 bg-gray-50/50 p-8 flex flex-col items-center justify-center text-center">
+        <div className="max-w-lg w-full">
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+            <h2 className="text-xl font-semibold text-slate-800 mb-2">
+              Start by dropping a Reference
+            </h2>
+            <p className="text-slate-500 mb-6 text-sm">
+              Upload the iPhone photo (HEIC/JPG) that contains the correct
+              location and time data.
+            </p>
+            <DropZone
+              setReferencePhoto={(file) =>
+                setReferenceFile(selectedTargetFile.id, file)
+              }
+            />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Active Workspace
+  return (
+    <main className="flex-1 bg-gray-50 overflow-y-auto">
+      <div className="max-w-3xl mx-auto p-8 space-y-6">
+        <section>
+          <header className="flex items-center justify-between mb-3 px-1">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Source (Reference Photo)
+            </h2>
+            <button
+              onClick={() => setReferenceFile(selectedTargetFile.id, undefined)}
+              className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+            >
+              Replace Reference
+            </button>
+          </header>
+
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <MetadataInspector referenceFile={referenceFile} />
+          </div>
+        </section>
+
+        {selectedTargetFile ? (
+          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <header className="mb-3 px-1">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Sync Settings
+              </h2>
+            </header>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900">
+                    Syncing to:{' '}
+                    <span className="font-mono text-indigo-600">
+                      {selectedTargetFile.file.name}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Adjust the time offset below to match the film shutter.
+                  </p>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              </div>
+
+              <div className="h-32 bg-slate-50 rounded border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
+                [Sync Controls Component Will Go Here]
+              </div>
+            </div>
+          </section>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-slate-400 border-2 border-dashed border-gray-200 rounded-xl">
+            <p className="text-sm">
+              Select a scan from the sidebar to start syncing
+            </p>
+          </div>
+        )}
       </div>
     </main>
   );

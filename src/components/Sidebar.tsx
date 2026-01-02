@@ -6,12 +6,12 @@ function Sidebar({
   files,
   setFiles,
   selectedTargetFile,
-  setSelectedTargetFile,
+  setSelectedTargetFileId,
 }: {
   files: PhotoFile[];
   setFiles: React.Dispatch<React.SetStateAction<PhotoFile[]>>;
   selectedTargetFile: string | undefined;
-  setSelectedTargetFile: React.Dispatch<
+  setSelectedTargetFileId: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
 }) {
@@ -63,7 +63,7 @@ function Sidebar({
             key={photo.id}
             photo={photo}
             isSelected={selectedTargetFile === photo.id}
-            setSelectedTargetFile={setSelectedTargetFile}
+            setSelectedTargetFileId={setSelectedTargetFileId}
           />
         ))}
       </div>
@@ -71,7 +71,9 @@ function Sidebar({
       {/* Fixed Footer with Button */}
       <div className="p-4 border-t border-gray-200 bg-white">
         <button
-          onClick={handleOpenFiles}
+          onClick={() => {
+            handleOpenFiles().catch(console.error);
+          }}
           className="w-full py-2 px-4 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition font-medium"
         >
           Select Scans...

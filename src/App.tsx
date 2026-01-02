@@ -1,12 +1,37 @@
-import { useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Workspace from './components/Workspace';
 import type { PhotoFile } from './types';
 
 function App() {
-  const [referencePhoto, setReferencePhoto] = useState<File>();
   const [targetFiles, setTargetFiles] = useState<PhotoFile[]>([]);
-  const [selectedTargetFile, setSelectedTargetFile] = useState<string>();
+  const [selectedTargetFileId, setSelectedTargetFileId] = useState<string>();
+
+  const setReferenceFile = useCallback(
+    (targetFileId: string, referenceFile: File | undefined) => {
+      if (referenceFile == null) {
+        return;
+      }
+
+      const targetFile = targetFiles.find((file) => file.id === targetFileId);
+      if (targetFile == null) {
+        throw new Error(`Target file with ID ${targetFileId} not found`);
+      }
+      setTargetFiles((prev) =>
+        prev.map((file) =>
+          file.id === targetFileId
+            ? { ...file, referenceFile: referenceFile }
+            : file,
+        ),
+      );
+    },
+    [targetFiles],
+  );
+
+  const selectedTargetFile = useMemo(
+    () => targetFiles.find((file) => file.id === selectedTargetFileId),
+    [targetFiles, selectedTargetFileId],
+  );
 
   return (
     <div className="h-screen flex flex-col bg-gray-100 text-slate-900">
@@ -20,13 +45,13 @@ function App() {
         <Sidebar
           files={targetFiles}
           setFiles={setTargetFiles}
-          selectedTargetFile={selectedTargetFile}
-          setSelectedTargetFile={setSelectedTargetFile}
+          selectedTargetFile={selectedTargetFileId}
+          setSelectedTargetFileId={setSelectedTargetFileId}
         />
 
         <Workspace
-          setReferencePhoto={setReferencePhoto}
-          referencePhoto={referencePhoto}
+          selectedTargetFile={selectedTargetFile}
+          setReferenceFile={setReferenceFile}
         />
       </div>
     </div>

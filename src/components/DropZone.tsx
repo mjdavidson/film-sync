@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 function DropZone({
   setReferencePhoto,
 }: {
-  setReferencePhoto: React.Dispatch<React.SetStateAction<File | undefined>>;
+  setReferencePhoto: (file: File) => void;
 }) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {

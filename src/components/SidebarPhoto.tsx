@@ -3,7 +3,7 @@ import type { PhotoFile } from '../types';
 interface SidebarPhotoProps {
   photo: PhotoFile;
   isSelected: boolean;
-  setSelectedTargetFile: React.Dispatch<
+  setSelectedTargetFileId: React.Dispatch<
     React.SetStateAction<string | undefined>
   >;
 }
@@ -11,11 +11,11 @@ interface SidebarPhotoProps {
 function SidebarPhoto({
   photo,
   isSelected,
-  setSelectedTargetFile,
+  setSelectedTargetFileId,
 }: SidebarPhotoProps) {
   return (
     <div
-      onClick={() => setSelectedTargetFile(photo.id)}
+      onClick={() => setSelectedTargetFileId(photo.id)}
       className={`
         p-3 rounded-lg border shadow-sm flex items-center gap-3 transition cursor-pointer
         ${
