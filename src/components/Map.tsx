@@ -1,5 +1,5 @@
-import type { LatLngExpression } from "leaflet";
-import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import type { LatLngExpression } from 'leaflet';
+import { MapContainer, Marker, TileLayer } from 'react-leaflet';
 
 function Map({ coords }: { coords: LatLngExpression }) {
   console.log({ coords });
@@ -9,7 +9,7 @@ function Map({ coords }: { coords: LatLngExpression }) {
       zoom={13}
       scrollWheelZoom={false}
       style={{
-        height: "250px",
+        height: '250px',
       }}
     >
       <TileLayer

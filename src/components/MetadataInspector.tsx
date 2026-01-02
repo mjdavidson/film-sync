@@ -1,10 +1,10 @@
-import { formatISO } from "date-fns";
-import exifr from "exifr";
-import { useEffect, useMemo, useState } from "react";
-import type { Metadata } from "../metadata";
-import { MetadataSchema } from "../metadata";
-import Map from "./Map";
-import MetadataRow from "./MetadataRow";
+import { formatISO } from 'date-fns';
+import exifr from 'exifr';
+import { useEffect, useMemo, useState } from 'react';
+import type { Metadata } from '../metadata';
+import { MetadataSchema } from '../metadata';
+import Map from './Map';
+import MetadataRow from './MetadataRow';
 
 function MetadataInspector({
   referenceFile,
