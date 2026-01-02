@@ -41,6 +41,9 @@ function Sidebar({
       );
 
       setFiles((prev) => [...prev, ...newFiles]);
+      if (files.length === 0) {
+        setSelectedTargetFileId(newFiles[0].id);
+      }
     } catch (err) {
       if ((err as Error).name !== 'AbortError') {
         console.error('Error opening files:', err);

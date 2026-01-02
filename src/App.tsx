@@ -9,10 +9,6 @@ function App() {
 
   const setReferenceFile = useCallback(
     (targetFileId: string, referenceFile: File | undefined) => {
-      if (referenceFile == null) {
-        return;
-      }
-
       const targetFile = targetFiles.find((file) => file.id === targetFileId);
       if (targetFile == null) {
         throw new Error(`Target file with ID ${targetFileId} not found`);
@@ -50,6 +46,7 @@ function App() {
         />
 
         <Workspace
+          isBatchEmpty={targetFiles.length === 0}
           selectedTargetFile={selectedTargetFile}
           setReferenceFile={setReferenceFile}
         />

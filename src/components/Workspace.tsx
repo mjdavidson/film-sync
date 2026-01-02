@@ -8,17 +8,34 @@ interface WorkspaceProps {
     targetFileId: string,
     referenceFile: File | undefined,
   ) => void;
+  isBatchEmpty: boolean;
 }
 
-function Workspace({ selectedTargetFile, setReferenceFile }: WorkspaceProps) {
+function Workspace({
+  selectedTargetFile,
+  setReferenceFile,
+  isBatchEmpty,
+}: WorkspaceProps) {
   const referenceFile = selectedTargetFile?.referenceFile;
   console.log({ selectedTargetFile });
 
   // no target photos
-  if (selectedTargetFile == null) {
-    return null;
+  if (isBatchEmpty || selectedTargetFile == null) {
+    return (
+      <main className="flex-1 bg-gray-50 flex flex-col items-center justify-center p-8 text-center text-slate-400">
+        <div className="max-w-md border-2 border-dashed border-gray-200 rounded-2xl p-12 bg-gray-50/50">
+          <h2 className="text-lg font-semibold text-slate-600">
+            No Scans Loaded
+          </h2>
+          <p className="mt-2 text-sm">
+            Click{' '}
+            <span className="font-bold text-slate-600">"Select Scans..."</span>{' '}
+            in the sidebar to load your film photos.
+          </p>
+        </div>
+      </main>
+    );
   }
-
   // Empty state
   if (referenceFile == null) {
     return (
@@ -65,42 +82,34 @@ function Workspace({ selectedTargetFile, setReferenceFile }: WorkspaceProps) {
           </div>
         </section>
 
-        {selectedTargetFile ? (
-          <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <header className="mb-3 px-1">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                Sync Settings
-              </h2>
-            </header>
+        <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <header className="mb-3 px-1">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Sync Settings
+            </h2>
+          </header>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">
-                    Syncing to:{' '}
-                    <span className="font-mono text-indigo-600">
-                      {selectedTargetFile.file.name}
-                    </span>
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Adjust the time offset below to match the film shutter.
-                  </p>
-                </div>
-                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">
+                  Syncing to:{' '}
+                  <span className="font-mono text-indigo-600">
+                    {selectedTargetFile.file.name}
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  Adjust the time offset below to match the film shutter.
+                </p>
               </div>
-
-              <div className="h-32 bg-slate-50 rounded border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
-                [Sync Controls Component Will Go Here]
-              </div>
+              <div className="h-2 w-2 rounded-full bg-green-500"></div>
             </div>
-          </section>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-slate-400 border-2 border-dashed border-gray-200 rounded-xl">
-            <p className="text-sm">
-              Select a scan from the sidebar to start syncing
-            </p>
+
+            <div className="h-32 bg-slate-50 rounded border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
+              [Sync Controls Component Will Go Here]
+            </div>
           </div>
-        )}
+        </section>
       </div>
     </main>
   );
