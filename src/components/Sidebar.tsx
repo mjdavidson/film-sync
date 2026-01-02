@@ -71,7 +71,6 @@ function Sidebar({
         ))}
       </div>
 
-      {/* Fixed Footer with Button */}
       <div className="p-4 border-t border-gray-200 bg-white">
         <button
           onClick={() => {
