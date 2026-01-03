@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { useState } from 'react';
 import type { PhotoFile } from '../types';
 import SidebarPhoto from './SidebarPhoto';
 
@@ -15,6 +16,8 @@ function Sidebar({
     React.SetStateAction<string | undefined>
   >;
 }) {
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+
   const handleOpenFiles = async () => {
     try {
       const handles = await window.showOpenFilePicker({
@@ -31,7 +34,7 @@ function Sidebar({
         handles.map(async (handle: FileSystemFileHandle) => {
           const file = await handle.getFile();
           return {
-            id: nanoid(), // Unique ID for React keys
+            id: nanoid(),
             file,
             handle,
             previewUrl: URL.createObjectURL(file),
@@ -41,7 +44,9 @@ function Sidebar({
       );
 
       setFiles((prev) => [...prev, ...newFiles]);
-      if (files.length === 0) {
+
+      // Auto-select first file if none selected
+      if (files.length === 0 && newFiles.length > 0) {
         setSelectedTargetFileId(newFiles[0].id);
       }
     } catch (err) {
@@ -50,25 +55,76 @@ function Sidebar({
       }
     }
   };
-  return (
-    <aside className="w-1/3 bg-gray-50 border-r border-gray-200 flex flex-col">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
-          Target Scans (Batch)
-        </h2>
 
+  return (
+    <aside className="w-1/3 min-w-[300px] bg-gray-50 border-r border-gray-200 flex flex-col transition-all duration-300">
+      <div className="flex items-center justify-between p-4 pb-2">
+        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+          Batch ({files.length})
+        </h2>
+        <button
+          onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')}
+          className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded transition"
+          title="Toggle View"
+        >
+          {viewMode === 'list' ? (
+            // Grid Icon
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
+              />
+            </svg>
+          ) : (
+            // List Icon
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-5 h-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          )}
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-4">
         {files.length === 0 && (
-          <p className="text-sm text-gray-400 italic">No files selected</p>
+          <div className="text-center mt-10">
+            <p className="text-sm text-gray-400 italic mb-4">No scans loaded</p>
+          </div>
         )}
 
-        {files.map((photo) => (
-          <SidebarPhoto
-            key={photo.id}
-            photo={photo}
-            isSelected={selectedTargetFile === photo.id}
-            setSelectedTargetFileId={setSelectedTargetFileId}
-          />
-        ))}
+        <div
+          className={
+            viewMode === 'list' ? 'space-y-3' : 'grid grid-cols-3 gap-2'
+          }
+        >
+          {files.map((photo) => (
+            <SidebarPhoto
+              key={photo.id}
+              photo={photo}
+              viewMode={viewMode}
+              isSelected={selectedTargetFile === photo.id}
+              setSelectedTargetFileId={setSelectedTargetFileId}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="p-4 border-t border-gray-200 bg-white">
@@ -76,9 +132,9 @@ function Sidebar({
           onClick={() => {
             handleOpenFiles().catch(console.error);
           }}
-          className="w-full py-2 px-4 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition font-medium"
+          className="w-full py-2 px-4 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition font-medium shadow-sm"
         >
-          Select Scans...
+          {files.length === 0 ? 'Select Scans...' : 'Add More...'}
         </button>
       </div>
     </aside>
