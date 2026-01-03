@@ -1,6 +1,9 @@
+import { useState } from 'react';
+import { useExif } from '../hooks/useExif';
 import type { PhotoFile } from '../types';
 import DropZone from './DropZone';
 import MetadataInspector from './MetadataInspector';
+import SyncControls from './SyncControls';
 
 interface WorkspaceProps {
   selectedTargetFile: PhotoFile | undefined;
@@ -17,7 +20,26 @@ function Workspace({
   isBatchEmpty,
 }: WorkspaceProps) {
   const referenceFile = selectedTargetFile?.referenceFile;
-  console.log({ selectedTargetFile });
+  const { metadata } = useExif({ referenceFile });
+
+  // State for the "pending" sync operation
+  const [offsetSeconds, setOffsetSeconds] = useState<number>(0);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Helper function for the "Sync" button (Phase 3 placeholder)
+  const handleSync = async () => {
+    if (!selectedTargetFile || !metadata) return;
+
+    setIsSyncing(true);
+    console.log(
+      `Syncing ${selectedTargetFile.file.name} with offset ${offsetSeconds.toString()}s`,
+    );
+
+    // Simulate a delay for now
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    setIsSyncing(false);
+  };
 
   // no target photos
   if (isBatchEmpty || selectedTargetFile == null) {
@@ -60,6 +82,8 @@ function Workspace({
     );
   }
 
+  const sourceDate = metadata?.DateTimeOriginal ?? metadata?.CreateDate;
+
   // Active Workspace
   return (
     <main className="flex-1 bg-gray-50 overflow-y-auto">
@@ -90,24 +114,22 @@ function Workspace({
           </header>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Syncing to:{' '}
-                  <span className="font-mono text-indigo-600">
-                    {selectedTargetFile.file.name}
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Adjust the time offset below to match the film shutter.
-                </p>
+            {sourceDate ? (
+              <SyncControls
+                sourceDate={sourceDate}
+                offsetSeconds={offsetSeconds}
+                setOffsetSeconds={setOffsetSeconds}
+                isSyncing={isSyncing}
+                onSync={() => {
+                  void handleSync();
+                }}
+                targetFileName={selectedTargetFile.file.name}
+              />
+            ) : (
+              <div className="text-center py-8 text-slate-400 text-sm">
+                Waiting for valid time data from reference photo...
               </div>
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-            </div>
-
-            <div className="h-32 bg-slate-50 rounded border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
-              [Sync Controls Component Will Go Here]
-            </div>
+            )}
           </div>
         </section>
       </div>
