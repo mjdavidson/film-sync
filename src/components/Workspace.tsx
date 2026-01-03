@@ -4,6 +4,7 @@ import type { PhotoFile } from '../types';
 import DropZone from './DropZone';
 import MetadataInspector from './MetadataInspector';
 import SyncControls from './SyncControls';
+import TargetScan from './TargetScan';
 
 interface WorkspaceProps {
   selectedTargetFile: PhotoFile | undefined;
@@ -62,7 +63,8 @@ function Workspace({
   if (referenceFile == null) {
     return (
       <main className="flex-1 bg-gray-50/50 p-8 flex flex-col items-center justify-center text-center">
-        <div className="max-w-lg w-full">
+        <div className="max-w-3xl mx-auto p-8 space-y-6">
+          <TargetScan selectedTargetFile={selectedTargetFile} />
           <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-xl font-semibold text-slate-800 mb-2">
               Start by dropping a Reference
@@ -87,24 +89,8 @@ function Workspace({
   // Active Workspace
   return (
     <main className="flex-1 bg-gray-50 overflow-y-auto">
-      <div className="max-w-3xl mx-auto p-8 space-y-6">
-        <section>
-          <header className="mb-3 px-1 flex justify-between items-end">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Target Scan
-            </h2>
-            <span className="text-xs text-slate-400 font-mono">
-              {selectedTargetFile.file.name}
-            </span>
-          </header>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 flex justify-center bg-checkered">
-            <img
-              src={selectedTargetFile.previewUrl}
-              className="max-h-64 rounded-lg object-contain"
-              alt="Target"
-            />
-          </div>
-        </section>
+      <div className="max-w-4xl mx-auto p-8 space-y-6">
+        <TargetScan selectedTargetFile={selectedTargetFile} />
 
         <section>
           <header className="flex items-center justify-between mb-3 px-1">
@@ -123,7 +109,6 @@ function Workspace({
             <MetadataInspector referenceFile={referenceFile} />
           </div>
         </section>
-
         <section className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           <header className="mb-3 px-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
