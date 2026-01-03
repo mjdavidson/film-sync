@@ -1,8 +1,6 @@
 import { formatISO } from 'date-fns';
-import exifr from 'exifr';
-import { useEffect, useMemo, useState } from 'react';
-import type { Metadata } from '../metadata';
-import { MetadataSchema } from '../metadata';
+import { useMemo } from 'react';
+import { useExif } from '../hooks/useExif';
 import Map from './Map';
 import MetadataRow from './MetadataRow';
 
@@ -11,52 +9,13 @@ function MetadataInspector({
 }: {
   referenceFile: File | undefined;
 }) {
-  const [val, setVal] = useState<Metadata>();
-  useEffect(() => {
-    if (referenceFile == null) {
-      return;
-    }
-    let cancel = false;
-    const promise = exifr.parse(referenceFile);
-
-    promise
-      .then((val) => {
-        const parsed = MetadataSchema.parse(val);
-        if (!cancel) {
-          setVal(parsed);
-        }
-      })
-      .catch(console.log);
-    return () => {
-      cancel = true;
-    };
-  }, [referenceFile]);
-  console.log({ referenceFile, val });
-
   const imgSrc = useMemo(
     () =>
       referenceFile != null ? URL.createObjectURL(referenceFile) : undefined,
     [referenceFile],
   );
 
-  const gpsCoords = useMemo(() => {
-    if (
-      val?.GPSLatitude == null ||
-      val.GPSLongitude == null ||
-      val.GPSLatitudeRef == null ||
-      val.GPSLongitudeRef == null
-    ) {
-      return null;
-    }
-    const latDeg = val.GPSLatitude[0].toString();
-    const latMin = val.GPSLatitude[1].toString();
-    const latSec = val.GPSLatitude[2].toString();
-    const lngDeg = val.GPSLongitude[0].toString();
-    const lngMin = val.GPSLongitude[1].toString();
-    const lngSec = val.GPSLongitude[2].toString();
-
-    return `${latDeg}°${latMin}'${latSec}"${val.GPSLatitudeRef} ${lngDeg}°${lngMin}'${lngSec}"${val.GPSLongitudeRef}`;
-  }, [val]);
+  const { gpsCoords, metadata } = useExif({ referenceFile });
 
   if (referenceFile == null) {
     return null;
@@ -69,27 +28,27 @@ function MetadataInspector({
           <img src={imgSrc} />
         </div>
         <div>
-          {val != null ? (
+          {metadata != null ? (
             <>
               <h3 className="font-semibold text-slate-900 mb-4">
                 Metadata Inspector
               </h3>
               <div className="space-y-4">
-                {val.CreateDate != null ? (
+                {metadata.CreateDate != null ? (
                   <MetadataRow
                     title="Originally created at"
-                    value={formatISO(val.CreateDate)}
+                    value={formatISO(metadata.CreateDate)}
                   />
                 ) : null}
                 {gpsCoords != null ? (
                   <MetadataRow title="GPS co-ords" value={gpsCoords} />
                 ) : null}
-                {val.latitude != null && val.longitude != null ? (
+                {metadata.latitude != null && metadata.longitude != null ? (
                   <Map
                     coords={{
-                      lat: val.latitude,
-                      lng: val.longitude,
-                      alt: val.GPSAltitude,
+                      lat: metadata.latitude,
+                      lng: metadata.longitude,
+                      alt: metadata.GPSAltitude,
                     }}
                   />
                 ) : null}
