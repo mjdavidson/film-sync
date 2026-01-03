@@ -89,6 +89,24 @@ function Workspace({
     <main className="flex-1 bg-gray-50 overflow-y-auto">
       <div className="max-w-3xl mx-auto p-8 space-y-6">
         <section>
+          <header className="mb-3 px-1 flex justify-between items-end">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              Target Scan
+            </h2>
+            <span className="text-xs text-slate-400 font-mono">
+              {selectedTargetFile.file.name}
+            </span>
+          </header>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2 flex justify-center bg-checkered">
+            <img
+              src={selectedTargetFile.previewUrl}
+              className="max-h-64 rounded-lg object-contain"
+              alt="Target"
+            />
+          </div>
+        </section>
+
+        <section>
           <header className="flex items-center justify-between mb-3 px-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Source (Reference Photo)
