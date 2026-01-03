@@ -62,23 +62,26 @@ function Workspace({
   // Empty state
   if (referenceFile == null) {
     return (
-      <main className="flex-1 bg-gray-50/50 p-8 flex flex-col items-center justify-center text-center">
-        <div className="max-w-3xl mx-auto p-8 space-y-6">
+      <main className="flex-1 bg-gray-50/50 overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-8 space-y-6">
           <TargetScan selectedTargetFile={selectedTargetFile} />
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h2 className="text-xl font-semibold text-slate-800 mb-2">
-              Start by dropping a Reference
-            </h2>
-            <p className="text-slate-500 mb-6 text-sm">
-              Upload the iPhone photo (HEIC/JPG) that contains the correct
-              location and time data.
-            </p>
-            <DropZone
-              setReferencePhoto={(file) =>
-                setReferenceFile(selectedTargetFile.id, file)
-              }
-            />
-          </div>
+
+          <section>
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+              <h2 className="text-xl font-semibold text-slate-800 mb-2">
+                Start by dropping a Reference
+              </h2>
+              <p className="text-slate-500 mb-6 text-sm">
+                Upload the iPhone photo (HEIC/JPG) that contains the correct
+                location and time data.
+              </p>
+              <DropZone
+                setReferencePhoto={(file) =>
+                  setReferenceFile(selectedTargetFile.id, file)
+                }
+              />
+            </div>
+          </section>
         </div>
       </main>
     );
