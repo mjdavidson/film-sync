@@ -17,5 +17,5 @@ export interface PhotoFile {
   referenceFile?: File; // The iPhone Photo (Source)
   referenceData?: ExifData; // The parsed metadata from the Source
 
-  status: 'pending' | 'synced' | 'error';
+  status: 'pending' | 'ready_to_sync' | 'synced' | 'error';
 }

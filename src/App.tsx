@@ -16,7 +16,7 @@ function App() {
       setTargetFiles((prev) =>
         prev.map((file) =>
           file.id === targetFileId
-            ? { ...file, referenceFile: referenceFile }
+            ? { ...file, referenceFile: referenceFile, status: 'ready_to_sync' }
             : file,
         ),
       );

@@ -93,7 +93,9 @@ function SidebarPhoto({
             ? 'Synced'
             : photo.status === 'error'
               ? 'Error'
-              : 'Pending'}
+              : photo.status === 'ready_to_sync' || photo.referenceFile != null
+                ? 'Ready to Sync'
+                : 'Pending'}
         </p>
       </div>
     </div>
