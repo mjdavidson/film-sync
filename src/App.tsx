@@ -7,8 +7,11 @@ function App() {
   const [targetFiles, setTargetFiles] = useState<PhotoFile[]>([]);
   const [selectedTargetFileId, setSelectedTargetFileId] = useState<string>();
 
-  const setReferenceFile = useCallback(
-    (targetFileId: string, referenceFile: File | undefined) => {
+  const updateTargetFile = useCallback(
+    (
+      targetFileId: string,
+      patch: { referenceFile?: File | null; offsetSeconds?: number },
+    ) => {
       const targetFile = targetFiles.find((file) => file.id === targetFileId);
       if (targetFile == null) {
         throw new Error(`Target file with ID ${targetFileId} not found`);
@@ -16,7 +19,21 @@ function App() {
       setTargetFiles((prev) =>
         prev.map((file) =>
           file.id === targetFileId
-            ? { ...file, referenceFile: referenceFile, status: 'ready_to_sync' }
+            ? {
+                ...file,
+                ...('referenceFile' in patch
+                  ? {
+                      referenceFile: patch.referenceFile,
+                      status:
+                        patch.referenceFile !== null
+                          ? 'ready_to_sync'
+                          : 'pending',
+                    }
+                  : {}),
+                ...('offsetSeconds' in patch
+                  ? { offsetSeconds: patch.offsetSeconds }
+                  : {}),
+              }
             : file,
         ),
       );
@@ -25,7 +42,7 @@ function App() {
   );
 
   const selectedTargetFile = useMemo(
-    () => targetFiles.find((file) => file.id === selectedTargetFileId),
+    () => targetFiles.find((file) => file.id === selectedTargetFileId) ?? null,
     [targetFiles, selectedTargetFileId],
   );
 
@@ -46,9 +63,10 @@ function App() {
         />
 
         <Workspace
+          key={selectedTargetFile?.id ?? 'none'}
           isBatchEmpty={targetFiles.length === 0}
+          updateTargetFile={updateTargetFile}
           selectedTargetFile={selectedTargetFile}
-          setReferenceFile={setReferenceFile}
         />
       </div>
     </div>

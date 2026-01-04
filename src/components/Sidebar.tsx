@@ -40,6 +40,7 @@ function Sidebar({
             handle,
             previewUrl: URL.createObjectURL(file),
             status: 'pending' as const,
+            offsetSeconds: 0,
           };
         }),
       );

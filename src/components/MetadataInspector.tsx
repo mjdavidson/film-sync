@@ -4,11 +4,7 @@ import { useExif } from '../hooks/useExif';
 import Map from './Map';
 import MetadataRow from './MetadataRow';
 
-function MetadataInspector({
-  referenceFile,
-}: {
-  referenceFile: File | undefined;
-}) {
+function MetadataInspector({ referenceFile }: { referenceFile: File | null }) {
   const imgSrc = useMemo(
     () =>
       referenceFile != null ? URL.createObjectURL(referenceFile) : undefined,

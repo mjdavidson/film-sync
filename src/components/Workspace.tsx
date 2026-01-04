@@ -7,24 +7,25 @@ import SyncControls from './SyncControls';
 import TargetScan from './TargetScan';
 
 interface WorkspaceProps {
-  selectedTargetFile: PhotoFile | undefined;
-  setReferenceFile: (
+  selectedTargetFile: PhotoFile | null;
+  updateTargetFile: (
     targetFileId: string,
-    referenceFile: File | undefined,
+    patch: {
+      referenceFile?: File | null | undefined;
+      offsetSeconds?: number | undefined;
+    },
   ) => void;
   isBatchEmpty: boolean;
 }
 
 function Workspace({
   selectedTargetFile,
-  setReferenceFile,
   isBatchEmpty,
+  updateTargetFile,
 }: WorkspaceProps) {
-  const referenceFile = selectedTargetFile?.referenceFile;
+  const referenceFile = selectedTargetFile?.referenceFile ?? null;
   const { metadata } = useExif({ referenceFile });
 
-  // State for the "pending" sync operation
-  const [offsetSeconds, setOffsetSeconds] = useState<number>(0);
   const [isSyncing, setIsSyncing] = useState(false);
 
   // Helper function for the "Sync" button (Phase 3 placeholder)
@@ -33,7 +34,7 @@ function Workspace({
 
     setIsSyncing(true);
     console.log(
-      `Syncing ${selectedTargetFile.file.name} with offset ${offsetSeconds.toString()}s`,
+      `Syncing ${selectedTargetFile.file.name} with offset ${selectedTargetFile.offsetSeconds.toString()}s`,
     );
 
     // Simulate a delay for now
@@ -76,8 +77,10 @@ function Workspace({
                 location and time data.
               </p>
               <DropZone
-                setReferencePhoto={(file) =>
-                  setReferenceFile(selectedTargetFile.id, file)
+                setReferencePhoto={(referenceFile) =>
+                  updateTargetFile(selectedTargetFile.id, {
+                    referenceFile,
+                  })
                 }
               />
             </div>
@@ -101,7 +104,9 @@ function Workspace({
               Source (Reference Photo)
             </h2>
             <button
-              onClick={() => setReferenceFile(selectedTargetFile.id, undefined)}
+              onClick={() =>
+                updateTargetFile(selectedTargetFile.id, { referenceFile: null })
+              }
               className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
             >
               Replace Reference
@@ -123,8 +128,10 @@ function Workspace({
             {sourceDate ? (
               <SyncControls
                 sourceDate={sourceDate}
-                offsetSeconds={offsetSeconds}
-                setOffsetSeconds={setOffsetSeconds}
+                offsetSeconds={selectedTargetFile.offsetSeconds}
+                setOffsetSeconds={(offsetSeconds) =>
+                  updateTargetFile(selectedTargetFile.id, { offsetSeconds })
+                }
                 isSyncing={isSyncing}
                 onSync={() => {
                   void handleSync();

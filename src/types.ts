@@ -14,8 +14,10 @@ export interface PhotoFile {
   handle?: FileSystemFileHandle;
   previewUrl: string;
 
-  referenceFile?: File; // The iPhone Photo (Source)
+  referenceFile?: File | null; // The iPhone Photo (Source)
   referenceData?: ExifData; // The parsed metadata from the Source
+
+  offsetSeconds: number;
 
   status: 'pending' | 'ready_to_sync' | 'synced' | 'error';
 }

@@ -2,11 +2,7 @@ import exifr from 'exifr';
 import { useEffect, useMemo, useState } from 'react';
 import { MetadataSchema, type Metadata } from '../metadata';
 
-export function useExif({
-  referenceFile,
-}: {
-  referenceFile: File | undefined;
-}) {
+export function useExif({ referenceFile }: { referenceFile: File | null }) {
   const [metadata, setMetadata] = useState<Metadata>();
   useEffect(() => {
     if (referenceFile == null) {
